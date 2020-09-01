@@ -3277,7 +3277,20 @@ static int handle_msr_write(struct vcpu_t *vcpu, uint32_t msr, uint64_t val,
 
     switch (msr) {
         case IA32_TSC: {
-            vcpu->tsc_offset = val - ia32_rdtsc();
+            uint64_t offset = val - ia32_rdtsc();
+
+            if (val == 0 && by_host) {
+                // We recognize this as an attempt to sync the tsc
+                // offsets between cpus.
+                if (vcpu->vm->sync_tsc_offset_defined) {
+                    offset = vcpu->vm->sync_tsc_offset;
+                } else {
+                    vcpu->vm->sync_tsc_offset = offset;
+                    vcpu->vm->sync_tsc_offset_defined = true;
+                }
+            }
+
+            vcpu->tsc_offset = offset;
             if (vmx(vcpu, pcpu_ctls) & USE_TSC_OFFSETTING) {
                 vmwrite(vcpu, VMX_TSC_OFFSET, vcpu->tsc_offset);
             }

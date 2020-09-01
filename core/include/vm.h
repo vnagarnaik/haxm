@@ -80,6 +80,8 @@ struct vm_t {
     uint64_t spare_ramsize;
     uint ram_entry_num;
     struct hax_vcpu_mem *ram_entry;
+    uint64_t sync_tsc_offset;
+    bool sync_tsc_offset_defined;
 };
 
 struct hva_entry {
