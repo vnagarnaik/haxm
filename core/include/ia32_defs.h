@@ -220,6 +220,14 @@ enum {
     IA32_EFER_XD  = (1u << 11)
 };
 
+// MISC_ENABLE bits
+enum {
+    IA32_MISC_ENABLE_BTS_UNAVAILABLE = (1u << 11),
+    IA32_MISC_ENABLE_PEBS_UNAVAILABLE = (1u << 12)
+};
+#define    MISC_ENABLE_SETBITS  (IA32_MISC_ENABLE_BTS_UNAVAILABLE | \
+                                 IA32_MISC_ENABLE_PEBS_UNAVAILABLE)
+
 // Feature control MSR bits
 enum {
     FC_LOCKED       = 0x00001,

@@ -630,6 +630,9 @@ static void vcpu_init(struct vcpu_t *vcpu)
         vcpu->gstate.apic_base |= APIC_BASE_BSP;
     }
 
+    // Initialize IA32_MISC_ENABLE
+    vcpu->gstate.misc_enable = MISC_ENABLE_SETBITS;
+
     // Initialize guest CPUID
     vcpu_init_cpuid(vcpu);
 
@@ -3168,7 +3171,7 @@ static int handle_msr_read(struct vcpu_t *vcpu, uint32_t msr, uint64_t *val)
             break;
         }
         case IA32_MISC_ENABLE: {
-            *val = 1u << 11 | 1u << 12;
+            *val = gstate->misc_enable;
             break;
         }
         // Old Linux kernels may read this MSR without first making sure that
@@ -3302,8 +3305,11 @@ static int handle_msr_write(struct vcpu_t *vcpu, uint32_t msr, uint64_t val,
         case IA32_MC0_STATUS:
         case IA32_MC0_ADDR:
         case IA32_MC0_MISC:
-        case IA32_DEBUGCTL:
+        case IA32_DEBUGCTL: {
+            break;
+        }
         case IA32_MISC_ENABLE: {
+            gstate->misc_enable = val;
             break;
         }
         case IA32_CPUID_FEATURE_MASK: {

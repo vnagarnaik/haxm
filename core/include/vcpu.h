@@ -59,6 +59,8 @@ struct gstate {
     uint64_t apm_pes_msrs[APM_MAX_GENERAL_COUNT];
     // IA32_TSC_AUX
     uint64_t tsc_aux;
+    // IA32_MISC_ENABLE
+    uint64_t misc_enable;
     struct hax_page *gfxpage;
     // APIC_BASE MSR
     uint64_t apic_base;
